@@ -11,14 +11,8 @@ function start() {
 
     handlePostUser();
 }
-
 start();
-
-function notification() {
-
-}
-
-// =========Lấy ra danh sách các User 
+// =========Lấy ra danh sách các User
 function getUsers(callback) {
     fetch(userApi)
         .then(function (response) {
@@ -32,17 +26,25 @@ function getUsers(callback) {
 
 function showUsers(users) {
     const listUser = document.getElementById('list-user');
-    const html = users.map((user) => {
-        return `<li id="users-${user._id}">
-        <h4>${user.name}</h4>
-        <button onclick="updateUserId(${user._id})" type="button" class="btn btn-primary">Sửa</button>
-        
-        </li>`
+    const html = users.map((user, index) => {
+        return `
+        <tbody>
+          <tr id="users-${user._id}">
+            <th scope="row">${index}</th>
+            <td>${user.name}</td>
+            <td>
+            <button onclick="updateUserId(${user._id})" type="button" class="btn btn-primary">Sửa</button>
+            <button onclick="deleteUser(${user._id})" type="button" class="btn btn-danger">Xóa</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+        `
     })
     listUser.innerHTML = html.reverse().join('')
 }
 
-// ========= Thêm user 
+// ========= Thêm user
 function createUser(data, callback) {
     const option = {
         method: 'POST',
@@ -72,6 +74,7 @@ function handlePostUser() {
             });
         })
         alert('Thêm Thành Công !')
+        location.reload();
     }
 }
 
@@ -95,11 +98,9 @@ function getUserId() {
         });
 }
 
-// Xóa theo id 
-function deleteUser() {
+// Xóa theo id
+function deleteUser(id) {
     confirm('Bạn chắc chắn muốn xóa ?')
-    const inputId = document.getElementById('userId').value;
-
     const options = {
         method: 'POST',
         headers: {
@@ -107,21 +108,18 @@ function deleteUser() {
         },
     };
 
-    fetch(deleteUserId + '/' + inputId, options)
+    fetch(deleteUserId + '/' + id, options)
         .then(function (response) {
             return response.json();
         })
         .then(function (userId) {
             const user = document.getElementById('show-getUser');
-            const liName = document.getElementById('users-' + inputId);
+            const trName = document.getElementById('users-' + id);
 
             if (userId.name) {
-                liName.remove();
+                trName.remove();
                 alert(`Xóa thành công : ${userId.name}`)
-            } else {
-                user.innerHTML = 'Không tồn tại id, Vui lòng nhập lại !';
             }
-
         });
 }
 
@@ -168,5 +166,6 @@ function onHandleUpdate() {
                 showUsers(users);
             });
             alert('Update Thành Công !')
+            location.reload();
         })
 }
