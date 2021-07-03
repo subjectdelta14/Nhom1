@@ -23,8 +23,6 @@ Phần 1 (lấy ra danh sách) thì ai cũng phải làm thì mới làm đc nh�
 Nên phần 1 mọi người tự làm.
 
 Phần 2 : Trường làm
-note : nếu nhập id lớn hơn id đã có
-lấy theo tên
 
 Phần 3 : Huỳnh làm
 
