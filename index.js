@@ -1,7 +1,8 @@
 const userApi = 'https://todonew412.herokuapp.com/api/list';
 const getUser = 'https://todonew412.herokuapp.com/api/get';
 const createApi = 'https://todonew412.herokuapp.com/api/create';
-const deleteUserId = 'https://todonew412.herokuapp.com/api/delete'
+const deleteUserId = 'https://todonew412.herokuapp.com/api/delete';
+const updateUser = 'https://todonew412.herokuapp.com/api/update?id=';
 
 function start() {
     getUsers(function (users) {
@@ -34,6 +35,8 @@ function showUsers(users) {
     const html = users.map((user) => {
         return `<li id="users-${user._id}">
         <h4>${user.name}</h4>
+        <button onclick="updateUserId(${user._id})" type="button" class="btn btn-primary">Sửa</button>
+        
         </li>`
     })
     listUser.innerHTML = html.reverse().join('')
@@ -84,7 +87,7 @@ function getUserId() {
             const user = document.getElementById('show-getUser');
 
             if (userId.name) {
-                user.innerHTML = userId.name;
+                document.getElementById('name').setAttribute('value', userId.name);
             } else {
                 user.innerHTML = 'Không tồn tại id, Vui lòng nhập lại !';
             }
@@ -113,7 +116,6 @@ function deleteUser() {
             const liName = document.getElementById('users-' + inputId);
 
             if (userId.name) {
-                user.innerHTML = userId.name;
                 liName.remove();
                 alert(`Xóa thành công : ${userId.name}`)
             } else {
@@ -121,4 +123,50 @@ function deleteUser() {
             }
 
         });
+}
+
+// Update user
+function updateUserId(id) {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    };
+
+    fetch(updateUser + id, options)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (user) {
+            document.getElementById('userId').setAttribute('value', user._id);
+            document.getElementById('name').setAttribute('value', user.name);
+        })
+}
+
+function onHandleUpdate() {
+    const inputId = document.getElementById('userId').value;
+    const inputName = document.getElementById('name').value;
+
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({
+            _id: inputId,
+            name: inputName
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    };
+
+    fetch(updateUser + inputId, options)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (users) {
+            getUsers(function (users) {
+                showUsers(users);
+            });
+            alert('Update Thành Công !')
+        })
 }
