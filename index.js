@@ -1,6 +1,7 @@
 const userApi = 'https://todonew412.herokuapp.com/api/list';
 const getUser = 'https://todonew412.herokuapp.com/api/get';
 const createApi = 'https://todonew412.herokuapp.com/api/create';
+const deleteUserId = 'https://todonew412.herokuapp.com/api/delete'
 
 function start() {
     getUsers(function (users) {
@@ -85,7 +86,38 @@ function getUserId() {
             if (userId.name) {
                 user.innerHTML = userId.name;
             } else {
-                user.innerHTML = 'Không tìm thấy User !';
+                user.innerHTML = 'Không tồn tại id, Vui lòng nhập lại !';
+            }
+
+        });
+}
+
+// Xóa theo id 
+function deleteUser() {
+    confirm('Bạn chắc chắn muốn xóa ?')
+    const inputId = document.getElementById('userId').value;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    };
+
+    fetch(deleteUserId + '/' + inputId, options)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (userId) {
+            const user = document.getElementById('show-getUser');
+            const liName = document.getElementById('users-' + inputId);
+
+            if (userId.name) {
+                user.innerHTML = userId.name;
+                liName.remove();
+                alert(`Xóa thành công : ${userId.name}`)
+            } else {
+                user.innerHTML = 'Không tồn tại id, Vui lòng nhập lại !';
             }
 
         });
